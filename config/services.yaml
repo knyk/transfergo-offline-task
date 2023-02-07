@@ -17,3 +17,13 @@ services:
     App\Handler\:
         resource: '../src/Handler/'
         tags: [ messenger.message_handler ]
+
+    adapter.mailer.amazon_ses:
+        class: App\Service\NotificationSenderAdapter\Email\SymfonyMailerBridge
+        arguments:
+            $transport: 'amazon_ses'
+            $sender: '%env(EMAIL_SENDER)%'
+
+    App\Service\NotificationSender:
+        calls:
+            - ['addAdapter', ['@adapter.mailer.amazon_ses']]

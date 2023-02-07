@@ -8,7 +8,11 @@ use App\ValueObject\Channel;
 
 final readonly class SendNotification
 {
-    public function __construct(public string $receiver, public Channel $channel)
-    {
+    public function __construct(
+        public string $receiver,
+        public string $content,
+        public Channel $channel,
+        public ?string $subject = null
+    ) {
     }
 }

@@ -11,8 +11,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 final class SendNotificationRequest
 {
     #[NotBlank]
-    public ?string $receiver;
+    public ?string $receiver = null;
+    #[NotBlank]
+    public ?string $content = null;
+    public ?string $subject = null;
     #[NotBlank]
     #[Choice(callback: [Channel::class, 'values'])]
-    public ?string $channel;
+    public ?string $channel = null;
 }

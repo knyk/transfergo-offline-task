@@ -6,6 +6,7 @@ namespace App\Handler;
 
 use App\Command\SendNotification;
 use App\Service\NotificationSender;
+use App\ValueObject\Notification;
 
 final readonly class SendNotificationHandler
 {
@@ -15,6 +16,9 @@ final readonly class SendNotificationHandler
 
     public function __invoke(SendNotification $command): void
     {
-        $this->notificationSender->send($command->receiver, $command->channel);
+        $this->notificationSender->send(
+            new Notification($command->receiver, $command->content, $command->subject),
+            $command->channel
+        );
     }
 }

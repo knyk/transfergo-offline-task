@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Service\NotificationSenderAdapter\Adapter;
 use App\Service\NotificationSenderAdapter\SendingFailed;
 use App\ValueObject\Channel;
+use App\ValueObject\Notification;
 
 class NotificationSender
 {
@@ -15,7 +16,7 @@ class NotificationSender
      */
     private array $adapters = [];
 
-    public function send(string $receiver, Channel $channel): void
+    public function send(Notification $notification, Channel $channel): void
     {
         foreach ($this->adapters as $adapter) {
             if (!$adapter->supports($channel)) {
@@ -23,7 +24,7 @@ class NotificationSender
             }
 
             try {
-                $adapter->send($receiver);
+                $adapter->send($notification);
 
                 return;
             } catch (SendingFailed) {

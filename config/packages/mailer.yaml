@@ -1,0 +1,4 @@
+framework:
+    mailer:
+        transports:
+            amazon_ses: '%env(AMAZON_SES_MAILER_DSN)%'

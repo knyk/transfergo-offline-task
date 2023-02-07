@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Api\V1;
 
+use App\Command\SendNotification as SendNotificationCommand;
 use App\Http\Api\V1\Request\SendNotificationRequest;
+use App\Service\NotificationSenderAdapter\SendingFailed;
 use App\ValueObject\Channel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -30,9 +33,24 @@ final readonly class SendNotification
             return new JsonResponse($this->normalizer->normalize($errors), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $this->messageBus->dispatch(
-            new \App\Command\SendNotification($request->receiver, Channel::from($request->channel))
-        );
+        try {
+            $this->messageBus->dispatch(
+                new SendNotificationCommand(
+                    $request->receiver,
+                    $request->content,
+                    Channel::from($request->channel),
+                    $request->subject
+                )
+            );
+        } catch (HandlerFailedException $exception) {
+            if ($exception->getPrevious() instanceof SendingFailed) {
+                return new JsonResponse(
+                    ['error' => $exception->getPrevious()->getMessage()],
+                    Response::HTTP_FAILED_DEPENDENCY
+                );
+            }
+        }
+
 
         return new JsonResponse(null, Response::HTTP_ACCEPTED);
     }
