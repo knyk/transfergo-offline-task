@@ -20,6 +20,9 @@
         "symfony/validator": "6.2.*",
         "symfony/yaml": "6.2.*"
     },
+    "require-dev": {
+        "phpspec/phpspec": "^7.3"
+    },
     "config": {
         "allow-plugins": {
             "symfony/flex": true,

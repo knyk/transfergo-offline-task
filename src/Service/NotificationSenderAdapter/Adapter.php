@@ -11,5 +11,7 @@ interface Adapter
     /**
      * @throws SendingFailed
      */
-    public function send(string $receiver, Channel $channel): void;
+    public function send(string $receiver): void;
+
+    public function supports(Channel $channel): bool;
 }
