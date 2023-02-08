@@ -47,6 +47,6 @@ readonly class SymfonyMailerBridge implements Adapter
 
     public function supports(Channel $channel): bool
     {
-        return $channel === Channel::Email;
+        return Channel::Email === $channel;
     }
 }

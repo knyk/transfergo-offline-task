@@ -24,6 +24,12 @@ services:
             $transport: 'amazon_ses'
             $sender: '%env(EMAIL_SENDER)%'
 
+    adapter.notifier.twilio:
+        class: App\Service\NotificationSenderAdapter\SMS\SymfonyNotifierBridge
+        arguments:
+            $transport: 'twilio'
+
     App\Service\NotificationSender:
         calls:
             - ['addAdapter', ['@adapter.mailer.amazon_ses']]
+            - ['addAdapter', ['@adapter.notifier.twilio']]
