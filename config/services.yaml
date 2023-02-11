@@ -33,6 +33,10 @@ services:
         arguments:
             $token: '%env(PUSHY_API_TOKEN)%'
 
+    App\Service\EnabledChannels:
+        arguments:
+            $disabledChannels: '%env(DISABLED_CHANNELS_COMMA_SEPARATED)%'
+
     App\Service\NotificationSender:
         calls:
             - ['addAdapter', ['@adapter.mailer.amazon_ses']]
