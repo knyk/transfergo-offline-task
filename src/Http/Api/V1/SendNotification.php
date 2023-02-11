@@ -49,6 +49,11 @@ final readonly class SendNotification
                     Response::HTTP_FAILED_DEPENDENCY
                 );
             }
+
+            return new JsonResponse(
+                ['error' => $exception->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
 

@@ -18,6 +18,11 @@ framework:
     php_errors:
         log: true
 
+    http_client:
+        scoped_clients:
+            pushy.client:
+                base_uri: '%env(PUSHY_API_URL)%'
+
 when@test:
     framework:
         test: true

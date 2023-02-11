@@ -29,7 +29,12 @@ services:
         arguments:
             $transport: 'twilio'
 
+    App\Service\NotificationSenderAdapter\Push\HttpClient\SymfonyHttpClient:
+        arguments:
+            $token: '%env(PUSHY_API_TOKEN)%'
+
     App\Service\NotificationSender:
         calls:
             - ['addAdapter', ['@adapter.mailer.amazon_ses']]
             - ['addAdapter', ['@adapter.notifier.twilio']]
+            - ['addAdapter', ['@App\Service\NotificationSenderAdapter\Push\PushyAdapter']]
