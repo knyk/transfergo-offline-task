@@ -56,7 +56,6 @@ final readonly class SendNotification
             );
         }
 
-
         return new JsonResponse(null, Response::HTTP_ACCEPTED);
     }
 }

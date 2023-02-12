@@ -37,7 +37,7 @@ class SymfonyNotifierBridgeSpec extends ObjectBehavior
 
     public function it_throws_exception_on_handler_exception(TexterInterface $texter): void
     {
-        $notification = new Notification('+48666666666', 'content');
+        $notification = new Notification(Channel::SMS, '+48666666666', 'content');
 
         $texter->send(Argument::any())->shouldBeCalledOnce()->willThrow(HandlerFailedException::class);
 
@@ -46,7 +46,7 @@ class SymfonyNotifierBridgeSpec extends ObjectBehavior
 
     public function it_sends_sms_using_notifiier(TexterInterface $texter): void
     {
-        $notification = new Notification('+48666666666', 'content');
+        $notification = new Notification(Channel::SMS, '+48666666666', 'content');
 
         $sms = new SmsMessage('+48666666666', 'content');
         $sms->transport(self::TRANSPORT);

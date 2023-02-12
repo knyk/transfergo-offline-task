@@ -17,8 +17,7 @@ final readonly class SendNotificationHandler
     public function __invoke(SendNotification $command): void
     {
         $this->notificationSender->send(
-            new Notification($command->receiver, $command->content, $command->subject),
-            $command->channel
+            new Notification($command->channel, $command->receiver, $command->content, $command->subject),
         );
     }
 }

@@ -16,7 +16,11 @@ services:
 
     App\Handler\:
         resource: '../src/Handler/'
-        tags: [ messenger.message_handler ]
+        tags: [messenger.message_handler]
+
+    App\EventListener\:
+        resource: '../src/EventListener/'
+        tags: [kernel.event_listener]
 
     adapter.mailer.amazon_ses:
         class: App\Service\NotificationSenderAdapter\Email\SymfonyMailerBridge

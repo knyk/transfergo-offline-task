@@ -38,7 +38,7 @@ class SymfonyMailerBridgeSpec extends ObjectBehavior
 
     public function it_throws_exception_on_transport_exception(MailerInterface $mailer): void
     {
-        $notification = new Notification('example@example.com', 'content', 'subject');
+        $notification = new Notification(Channel::Email, 'example@example.com', 'content', 'subject');
 
         $mailer->send(Argument::any())->shouldBeCalledOnce()->willThrow(TransportException::class);
 
@@ -47,7 +47,7 @@ class SymfonyMailerBridgeSpec extends ObjectBehavior
 
     public function it_sends_email_using_mailer(MailerInterface $mailer): void
     {
-        $notification = new Notification('example@example.com', 'content', 'subject');
+        $notification = new Notification(Channel::Email, 'example@example.com', 'content', 'subject');
 
         $email = new Email();
         $email->getHeaders()->addTextHeader('X-Transport', self::TRANSPORT);

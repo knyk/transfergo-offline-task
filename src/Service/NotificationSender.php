@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Event\NotificationSent;
 use App\Service\NotificationSenderAdapter\Adapter;
 use App\Service\NotificationSenderAdapter\ChannelDisabled;
 use App\Service\NotificationSenderAdapter\SendingFailed;
-use App\ValueObject\Channel;
 use App\ValueObject\Notification;
+use Psr\Clock\ClockInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class NotificationSender
 {
-    public function __construct(private readonly EnabledChannels $enabledChannels)
-    {
+    public function __construct(
+        private readonly EnabledChannels $enabledChannels,
+        private readonly ClockInterface $clock,
+        private readonly EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     /**
@@ -21,8 +26,10 @@ class NotificationSender
      */
     private array $adapters = [];
 
-    public function send(Notification $notification, Channel $channel): void
+    public function send(Notification $notification): void
     {
+        $channel = $notification->channel;
+
         if (!$this->enabledChannels->isChannelEnabled($channel)) {
             throw ChannelDisabled::withChannel($channel);
         }
@@ -34,6 +41,8 @@ class NotificationSender
 
             try {
                 $adapter->send($notification);
+
+                $this->dispatchSentEvent($notification);
 
                 return;
             } catch (SendingFailed) {
@@ -47,5 +56,12 @@ class NotificationSender
     public function addAdapter(Adapter $adapter): void
     {
         $this->adapters[] = $adapter;
+    }
+
+    private function dispatchSentEvent(Notification $notification): void
+    {
+        $event = new NotificationSent($notification, $this->clock->now());
+
+        $this->eventDispatcher->dispatch($event);
     }
 }
